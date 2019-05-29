@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--配置Job作业:所要执行的那个类-->
+    <bean id="quartzApp" class="com.zjm.utils.QuartzApp"/>
+
+    <!--配置JobDetail-->
+    <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="quartzApp"/><!--引用那个类-->
+        <property name="targetMethod" value="testapp" /><!--引用所要执行那个类里的方法-->
+    </bean>
+
+    <!--配置Trigger-->
+    <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="jobDetail" />
+        <property name="cronExpression" value="* * * * * ?" /><!-- 从14点开始直到14点59分每隔1分钟运行一次 -->
+    </bean>
+
+    <!--配置schedular-->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="cronTrigger" />
+            </list>
+        </property>
+    </bean>
+</beans>
+
+
+
